@@ -83,48 +83,9 @@ end
 onSignal.onSignal = makeTable(true)
 onSignal.onSwitch = makeTable(false)
 
-local function isSignal(id)
-  return EEPGetSignal(id) ~= 0
-end
-local function isSwitch(id)
-  return EEPGetSwitch(id) ~= 0
-end
-
-onSignal.onSignalOrSwitch = { add = {}, listeners = {} }
-setmetatable(onSignal.onSignalOrSwitch, {
-  __index = function(_, id)
-    return onSignal.onSignal[id] or onSignal.onSwitch[id]
-  end,
-  __newindex = function(_, id, func)
-    if isSignal(id) then
-      onSignal.onSignal[id] = func
-    elseif isSwitch(id) then
-      onSignal.onSwitch[id] = func
-    else
-      error(("Weder Signal noch Weiche #%04d existieren, kann daher keine Callback-Funktion anlegen"):format(id), 2)
-    end
-  end,
-})
-setmetatable(onSignal.onSignalOrSwitch.add, {
-  __newindex = function(_, id, func)
-    if isSignal(id) then
-      onSignal.onSignal.add[id] = func
-    elseif isSwitch(id) then
-      onSignal.onSwitch.add[id] = func
-    else
-      error(("Weder Signal noch Weiche #%04d existieren, kann daher keine Callback-Funktion anlegen"):format(id), 2)
-    end
-  end,
-})
-setmetatable(onSignal.onSignalOrSwitch.listeners, {
-  __index = function(_, id)
-    return onSignal.onSignal.listeners[id] or onSignal.onSwitch.listeners[id]
-  end,
-})
-
 setmetatable(onSignal, {
   __call = function(_, options)
-    return onSignal.onSignal, onSignal.onSwitch, onSignal.onSignalOrSwitch
+    return onSignal.onSignal, onSignal.onSwitch
   end
 })
 

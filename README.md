@@ -9,7 +9,7 @@ Einfaches Definieren von Callback-Funktionen für Signale (und Weichen)
 
 ## Beispiel-Code
 ```lua
-onSignal, onSwitch, onSignalOrSwitch = require("onSignal_BH2")()
+onSignal, onSwitch = require("onSignal_BH2")()
 
 onSignal[1] = function(position)
   print("Signal 1 ist nun in Position "..position)
