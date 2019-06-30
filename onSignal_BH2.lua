@@ -6,6 +6,21 @@ local onSignal = {
 }
 
 local function makeTable(isForSignal)
+  local function assertId(id)
+    idAsNumber = tonumber(id)
+    if idAsNumber == nil then
+      local message
+      if isForSignal then
+        message = "Kann keine Callback-Funktion anlegen, da %s (Typ %s) keine gültige Signal-ID ist"
+      else
+        message = "Kann keine Callback-Funktion anlegen, da %s (Typ %s) keine gültige Weichen-ID ist"
+      end
+      error(message:format(id, type(id)), 3)
+    else
+      return idAsNumber
+    end
+  end
+  
   local function getFuncName(id)
     if isForSignal then
       return ("EEPOnSignal_%d"):format(id)
@@ -13,6 +28,7 @@ local function makeTable(isForSignal)
       return ("EEPOnSwitch_%d"):format(id)
     end
   end
+  
   local function registerAndCheck(id)
     local ok
     if isForSignal then
@@ -27,32 +43,29 @@ local function makeTable(isForSignal)
       else
         message = "Kann keine Callback-Funktion für Weiche #%04d anlegen, da sie nicht existiert"
       end
-      error(message:format(id), 2)
+      error(message:format(id), 3)
     end
   end
+  
   return setmetatable({}, {
     __index = function(_, id)
-      if type(id) == "number" then
-        return _ENV[getFuncName(id)]
-      end
+      id = assertId(id)
+      return _ENV[getFuncName(id)]
     end,
     __newindex = function(_, id, func)
-      if type(id) == "number" then
-        registerAndCheck(id)
-        local funcName = getFuncName(id)
-        if _ENV[funcName] ~= nil then
-          local message
-          if isForSignal then
-            message = "Kann keine Callback-Funktion für Signal #%04d anlegen, da die Funktion %s bereits existiert"
-          else
-            message = "Kann keine Callback-Funktion für Weiche #%04d anlegen, da die Funktion %s bereits existiert"
-          end
-          error(message:format(id, funcName), 2)
+      id = assertId(id)
+      registerAndCheck(id)
+      local funcName = getFuncName(id)
+      if _ENV[funcName] ~= nil then
+        local message
+        if isForSignal then
+          message = "Kann keine Callback-Funktion für Signal #%04d anlegen, da die Funktion %s bereits existiert"
+        else
+          message = "Kann keine Callback-Funktion für Weiche #%04d anlegen, da die Funktion %s bereits existiert"
         end
-        _ENV[funcName] = func
-      else -- no signal id, maybe someone tries monkeypatching
-        rawset(_, id, func)
+        error(message:format(id, funcName), 2)
       end
+      _ENV[funcName] = func
     end,
   })
 end
