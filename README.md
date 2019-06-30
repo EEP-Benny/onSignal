@@ -1,11 +1,12 @@
 # onSignal
-`onSignal` vereinfacht das Definieren von Callback-Funktionen für Signale (und Weichen).
+`onSignal` vereinfacht das Definieren von Callback-Funktionen für Signale (und Weichen) und verhindert dabei schwer zu findende Fehler.
 
 Die gewünschte Funktion wird einfach in die Tabelle `onSignal[id]` geschrieben. Ein Aufruf von `EEPRegisterSignal()` ist nicht mehr nötig, kann also auch nicht vergessen werden.
-Die `id` kann sowohl eine Zahl als auch eine Variable sein.
-Damit kann auch das umständliche `_ENV["EEPOnSignal_"..id]`-Konstrukt entfallen.
-Außerdem erzeugt `onSignal` Fehlermeldungen, wenn eine Callback-Funktion für ein nicht existierendes Signal definiert wird, oder eine vorhandene Callback-Funktion überschrieben würde.
-Fehler will zwar niemand, aber eine sofortige Fehlermeldung ist besser als ein Fehler ohne Meldung, der sich erst viel später bemerkbar macht.
+Die `id` kann sowohl eine feste Zahl als auch eine Variable sein.
+Damit kann das umständliche `_ENV["EEPOnSignal_"..id]`-Konstrukt entfallen.
+
+Außerdem meldet `onSignal`, wenn die Signal-ID ungültig ist, eine Callback-Funktion für ein nicht existierendes Signal definiert wird, oder eine vorhandene Callback-Funktion überschrieben würde.
+Ein sofort gemeldeter Fehler ist deutlich einfacher zu beheben als ein Fehler ohne Meldung, der sich erst viel später bemerkbar macht.
 
 ### Schnellstart-Anleitung
 
@@ -33,35 +34,48 @@ function EEPOnSignal_1(position)
   print("Signal 1 ist nun in Position "..position)
 end
 ```
-Der `onSignal`-Code ist zwar nicht viel kürzer, bietet aber noch weitere Vorteile (siehe Einführungstext).
+Der `onSignal`-Code ist zwar nicht viel kürzer, bietet aber noch andere Vorteile (siehe Einführungstext).
 
 Callback-Funktionen für Weichen können über `onSwitch[id]` erzeugt werden:
 ```lua
 onSwitch[2] = function(position)
-  print("Signal 2 ist nun in Position "..position)
+  print("Weiche 2 ist nun in Position "..position)
 end
 ```
 
-## Vorteile
-1. `EEPRegisterSignal` nicht mehr nötig (kann also nicht vergessen werden)
-2. leichter parametrisierbar
-3. Fehlermeldungen
-4. mehrere Callback-Funktionen für das selbe Signal
+### Technische Details
+Eigentlich hatte ich geplant, dass man `EEPOnSignal_1` 1:1 durch `onSignal[1]` ersetzen kann.
+Doch da hat mir Lua einen Strich durch die Rechnung gemacht: `function onSignal[1](position)` gilt als Syntax-Fehler.
+Deshalb ist nur die Schreibweise `onSignal[1] = function(position)` möglich (die man auch für `EEPOnSignal_1` verwenden könnte).
 
-## Beispiel-Code
+In der Regel wird eine Callback-Funktion einmal definiert, und dann von EEP aufgerufen.
+Sollte es aus irgendeinem Grund doch mal nötig sein, eine vorhandene Callback-Funktion per Lua aufzurufen, so ist der Zugriff auf `onSignal[1]` auch lesend (statt schreibend) möglich.
+
+Als ID kann alles verwendet werden, was von der Lua-Funktion `tonumber()` in eine Zahl umgewandelt werden kann.
+Das beinhaltet natürlich Zahlen, aber auch numerische Strings (die nur eine Zahl enthalten).
+Alles andere (`nil`, Tabellen, ungültige Strings, ...) führt zu einer Fehlermeldung.
+
 ```lua
-onSignal, onSwitch = require("onSignal_BH2")()
+-- funktioniert (wenn es ein Signal mit der ID 123 auf der Anlage gibt)
+onSignal["123"] = function() end
 
-onSignal[1] = function(position)
-  print("Signal 1 ist nun in Position "..position)
-end
+-- Fehler, weil keine gültige ID
+onSignal["abc"] = function() end
+```
 
+Weil die ID des Signals nicht mehr Teil des Funktionsnamens ist, kann auch einfach eine Variable benutzt werden.
+Mit einer Schleife können dann Callback-Funktionen für mehrere Signale auf einmal erzeugt werden:
+```lua
 for id = 10, 20 do
   onSignal[id] = function(position)
     print("Signal "..id.." ist nun in Position "..position)
   end
-  onSignal.add[id] = function(position)
-    EEPSetSignal(id+1, position, 1)
-  end
 end
 ```
+Sowas war bisher nur mit dem umständlichen `_ENV["EEPOnSignal_"..id]`-Konstrukt möglich.
+
+### Changelog
+**v1.0.0 vom 30.06.2019:**
+* Einfacheres Definieren von Callback-Funktionen für Signale und Weichen
+* Kein separater Aufruf von `EEPRegisterSignal` nötig
+* Hilfreiche Fehlermeldungen
