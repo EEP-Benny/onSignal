@@ -7,7 +7,7 @@ local onSignal = {
 
 local function makeTable(isForSignal)
   local function assertId(id)
-    idAsNumber = tonumber(id)
+    local idAsNumber = tonumber(id)
     if idAsNumber == nil then
       local message
       if isForSignal then
