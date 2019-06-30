@@ -75,4 +75,4 @@ end
 Sowas war bisher nur mit dem umständlichen `_ENV["EEPOnSignal_"..id]`-Konstrukt möglich.
 
 ### Changelog
-Siehe [EMAPS](http://emaps-eep.de/lua/onsignal) oder [GitHub-Release-Seite](/releases).
+Siehe [EMAPS](http://emaps-eep.de/lua/onsignal) oder [GitHub-Release-Seite](https://github.com/EEP-Benny/onSignal/releases).
