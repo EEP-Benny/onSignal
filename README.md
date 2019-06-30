@@ -11,7 +11,7 @@ Ein sofort gemeldeter Fehler ist deutlich einfacher zu beheben als ein Fehler oh
 ### Schnellstart-Anleitung
 
 #### 1. Installieren
-Nach dem Download die zip-Datei in EEP über den Menüpunkt „Modelle installieren“ installieren (gibt es erst ab EEP13), ansonsten die zip-Datei entpacken und die `Installation.eep` aufrufen, oder die `onSignal_BH2.lua` von Hand ins EEP-Verzeichnis in den Unterordner `LUA` kopieren.
+Nach dem [Download](http://emaps-eep.de/lua/onsignal) die zip-Datei in EEP über den Menüpunkt „Modelle installieren“ installieren (gibt es erst ab EEP13), ansonsten die zip-Datei entpacken und die `Installation.eep` aufrufen, oder die `onSignal_BH2.lua` von Hand ins EEP-Verzeichnis in den Unterordner `LUA` kopieren.
 
 #### 2. Einbinden
 Füge diese Zeile an den Anfang des Anlagen-Skripts ein (die zusätzlichen runden Klammern am Ende sind wichtig!):
@@ -75,7 +75,4 @@ end
 Sowas war bisher nur mit dem umständlichen `_ENV["EEPOnSignal_"..id]`-Konstrukt möglich.
 
 ### Changelog
-**v1.0.0 vom 30.06.2019:**
-* Einfacheres Definieren von Callback-Funktionen für Signale und Weichen
-* Kein separater Aufruf von `EEPRegisterSignal` nötig
-* Hilfreiche Fehlermeldungen
+Siehe [EMAPS](http://emaps-eep.de/lua/onsignal) oder [GitHub-Release-Seite](/releases).
