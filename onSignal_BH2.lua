@@ -56,7 +56,7 @@ local function makeTable(isForSignal)
       id = assertId(id)
       registerAndCheck(id)
       local funcName = getFuncName(id)
-      if _ENV[funcName] ~= nil then
+      if _ENV[funcName] ~= nil and func ~= nil then
         local message
         if isForSignal then
           message = "Kann keine Callback-Funktion für Signal #%04d anlegen, da die Funktion %s bereits existiert"
