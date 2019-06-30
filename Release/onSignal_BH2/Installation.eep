@@ -1,0 +1,10 @@
+[Install_00]
+Name_GER	 = "onSignal_BH2 v1.0"
+Name_ENG	 = "onSignal_BH2 v1.0"
+Name_FRA	 = "onSignal_BH2 v1.0"
+Name_POL	 = "onSignal_BH2 v1.0"
+Desc_GER	 = "onSignal vereinfacht das Definieren von Callback-Funktionen für Signale (und Weichen)[e]und verhindert dabei schwer zu findende Fehler.[e][e]https://emaps-eep.de/lua/onsignal"
+Desc_ENG	 = "onSignal vereinfacht das Definieren von Callback-Funktionen für Signale (und Weichen)[e]und verhindert dabei schwer zu findende Fehler.[e][e]https://emaps-eep.de/lua/onsignal"
+Desc_FRA	 = "onSignal vereinfacht das Definieren von Callback-Funktionen für Signale (und Weichen)[e]und verhindert dabei schwer zu findende Fehler.[e][e]https://emaps-eep.de/lua/onsignal"
+Desc_POL	 = "onSignal vereinfacht das Definieren von Callback-Funktionen für Signale (und Weichen)[e]und verhindert dabei schwer zu findende Fehler.[e][e]https://emaps-eep.de/lua/onsignal"
+Script	 = "Install_00\Install.ini"
