@@ -30,8 +30,7 @@ local function makeTable(isForSignal)
       error(message:format(id), 2)
     end
   end
-  local mytable = { add = {}, listeners = {} }
-  setmetatable(mytable, {
+  return setmetatable({}, {
     __index = function(_, id)
       if type(id) == "number" then
         return _ENV[getFuncName(id)]
@@ -56,29 +55,6 @@ local function makeTable(isForSignal)
       end
     end,
   })
-  setmetatable(mytable.add, {
-    __newindex = function(_, id, func)
-      if type(id) == "number" then
-        if type(mytable.listeners[id]) ~= "table" then
-          registerAndCheck(id)
-          local funcName = getFuncName(id)
-          mytable.listeners[id] = {}
-          if _ENV[funcName] then
-            table.insert(mytable.listeners[id], _ENV[funcName])
-          end
-          _ENV[funcName] = function(...)
-            for _, listener in ipairs(mytable.listeners[id]) do
-              listener(...)
-            end
-          end
-        end
-        table.insert(mytable.listeners[id], func)
-      else -- no signal id, maybe someone tries monkeypatching
-        rawset(_, id, func)
-      end
-    end,
-  })
-  return mytable
 end
 onSignal.onSignal = makeTable(true)
 onSignal.onSwitch = makeTable(false)
